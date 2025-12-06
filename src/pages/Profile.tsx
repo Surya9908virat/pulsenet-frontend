@@ -136,7 +136,7 @@ const Profile = () => {
       <div className="flex items-center space-x-4">
               
         <img
-          src="https://randomuser.me/api/portraits/men/32.jpg"
+          src={profile.user.profilePic || 'https://via.placeholder.com/150'}
           alt="Profile"
           className="w-24 h-24 rounded-full border-4 border-blue-600 hover:scale-105 transition-transform object-cover"
         />
