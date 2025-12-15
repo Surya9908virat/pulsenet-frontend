@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import { deletePost } from "../api/postApi";
 
 interface PostCardProps {
   profilePhoto: string;
@@ -9,6 +10,7 @@ interface PostCardProps {
   comments: number;
   postImage: string;
   id?: string;
+  showDeleteButton?: boolean;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -19,6 +21,7 @@ const PostCard: React.FC<PostCardProps> = ({
   comments,
   postImage,
   id,
+  showDeleteButton = false,
 }) => {
   const handleLikedPosts = async () => {
   try {
@@ -45,6 +48,20 @@ const PostCard: React.FC<PostCardProps> = ({
     console.log(error);
   }
 };
+
+  const handleDeletePost = async () => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return;
+    }
+
+    try {
+      await deletePost(id!);
+      alert('Post deleted successfully!');
+      window.location.reload(); // Refresh to update the posts list
+    } catch (error: any) {
+      alert(error.message || 'Failed to delete post');
+    }
+  };
 
   return (
     <div className="w-full max-w-xl bg-white rounded-xl shadow-md p-4">
@@ -95,6 +112,15 @@ const PostCard: React.FC<PostCardProps> = ({
         </button>
         <button className="text-xl hover:scale-110 transition">💬</button>
         <button className="text-xl hover:scale-110 transition">↗️</button>
+        {showDeleteButton && (
+          <button
+            className="text-xl hover:scale-110 transition text-red-500"
+            onClick={handleDeletePost}
+            title="Delete Post"
+          >
+            🗑️
+          </button>
+        )}
       </div>
     </div>
   );
