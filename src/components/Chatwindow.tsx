@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
+import axios from "axios";
 
 interface Message {
   id: string;
@@ -7,11 +8,6 @@ interface Message {
   content: string;
 }
 
-const dummyFriends = [
-  { _id: "1", name: "Rahul" },
-  { _id: "2", name: "Priya" },
-  { _id: "3", name: "Ajay" },
-];
 
 const dummyMessages: Record<string, Message[]> = {
   "1": [
@@ -25,10 +21,23 @@ const dummyMessages: Record<string, Message[]> = {
 };
 
 const ChatWindow = ({ onClose }: { onClose: () => void }) => {
+  const [friends,setFriends] = useState<any>([])
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
-
+  const getAllFriends = async () => {
+    try {
+      const api = "http://localhost:5000/api/friendrequest/getAllFriends";
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(api, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFriends(res.data.friends || []);
+    } catch (error) {
+      console.log("Error fetching friends:", error);
+    }
+  };
   const handleSelectUser = (user: any) => {
     setSelectedUser(user);
     setMessages(dummyMessages[user._id] || []);
@@ -46,7 +55,9 @@ const ChatWindow = ({ onClose }: { onClose: () => void }) => {
     setMessages((prev) => [...prev, newMsg]);
     setText("");
   };
-
+useEffect(()=>{
+  getAllFriends()
+},[])
   return (
     <div className="w-[320px] h-[400px] bg-white rounded-lg shadow-2xl flex flex-col">
       {/* Header */}
@@ -60,7 +71,7 @@ const ChatWindow = ({ onClose }: { onClose: () => void }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Friends */}
         <div className="w-1/3 border-r text-sm overflow-y-auto">
-          {dummyFriends.map((user) => (
+          {friends.map((user) => (
             <div
               key={user._id}
               onClick={() => handleSelectUser(user)}
