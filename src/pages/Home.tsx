@@ -198,7 +198,9 @@ const Home = () => {
         <h2 className="text-xl font-bold mb-4">Friends</h2>
         <ul className="space-y-4">
 
-          {friends.length > 0 && friends.map((friend) => (
+          {friends?  friends.length  > 0 ?
+          
+          <>{friends.map((friend) => (
             <> 
             <Link key={friend._id} to={`/friend/${friend._id}`}>
             <div className="bg-white flex flex-col items-center p-2 rounded shadow">
@@ -216,7 +218,9 @@ const Home = () => {
              </Link>
             </>
 
-          ))}
+          ))}</>:<>
+          
+          </>:<></>}
           {/* <li className="mb-2 p-2 bg-white rounded shadow">Alice</li> */}
        
         </ul>
