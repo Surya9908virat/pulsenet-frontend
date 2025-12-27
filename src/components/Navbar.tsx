@@ -1,19 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 
-interface LoginPopupProps{
+interface LoginPopupProps {
   onClose: () => void;
-  setUser:(name:string)=>void
+  setUser: (name: string) => void;
 }
 
 const Navbar: React.FC = () => {
+  const [searchText, setSearchText] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   console.log(isLoginPage);
 
   const [openPopup, setOpenPopup] = useState(false);
+ const searchUser = async (query: string) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/user/search/${query}`
+      );
+      if (res.data.users) {
+        setResults(res.data.users);
+        setShowDropdown(true);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchText.trim().length > 0) {
+        searchUser(searchText);
+      } else {
+        setResults([]);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchText]);
+
+
+  const handleSelectUser = (userId: string) => {
+    setShowDropdown(false);
+    setSearchText("");
+    // navigate(`/profile/${userId}`);
+  };
   return (
     <>
       <nav className="w-full h-20 bg-white border-b flex items-center justify-between px-4">
@@ -36,7 +69,33 @@ const Navbar: React.FC = () => {
                 type="text"
                 placeholder="Search Friends..."
                 className="border rounded px-3 w-45"
+                onChange={(e) => setSearchText(e.target.value)}
+                onFocus={()=>searchText && setShowDropdown(true)}
               />
+              {showDropdown && results.length > 0 && (
+                <div className="absolute bg-white border mt-12 w-60 max-h-60 overflow-y-auto rounded shadow-lg z-10">
+                  {results.map((user) => (
+                    <div
+                      key={user._id}
+                      className="px-4 py-2 hover:bg-gray-200 cursor-pointer
+                      
+                      flex items-center gap-3"  
+                      onClick={() => handleSelectUser(user._id)}
+                    >
+                      <img src={user.profilePic}
+                      className="w-10 h-10 rounded-full "
+                      alt="" />
+                      <Link to={`/friend/${user._id}`}>
+                        {user.name}
+                      </Link>
+
+                    </div>  
+                  ))}
+                </div>
+              )}
+    
+
+
 
               <Link to="/notification">🔔</Link>
               <Link to="/profile">👤</Link>
@@ -44,11 +103,7 @@ const Navbar: React.FC = () => {
           </>
         )}
       </nav>
-      {
-        openPopup && (
-          <LoginPopup onClose={() => setOpenPopup(false)} />
-        )
-      }
+      {openPopup && <LoginPopup onClose={() => setOpenPopup(false)} />}
     </>
   );
 };
@@ -57,68 +112,74 @@ export default Navbar;
 
 const LoginPopup = ({ onClose }: { onClose: () => void }) => {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
-  const [loading,setLoading] = useState(false)
-  const [form,setForm]=useState({
-    name:"",
-    email:"",
-    password:"",
-    cPassword:""
-  })
-  const [user,setUser]=useState("")
-  const [error,setError]=useState("")
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    cPassword: "",
+  });
+  const [user, setUser] = useState("");
+  const [error, setError] = useState("");
 
-
-  const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(form);
-    
+
     setForm({
       ...form,
-      [e.target.name]:e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const handleLogin=async()=>{
-    console.log('ok');
-    
-    setLoading(true)
-    setError("")
-  try {
-    const res = await axios.post("http://localhost:5000/api/user/login",{email:form.email,password:form.password})
-    localStorage.setItem("token",res.data.token)
-     setUser(res.data.message.split(" ")[0]); 
-     alert(`login successful for ${user}`)
-    onClose()
-  } catch (err:unknown) {
-    setError(err.response.data+'')
-    setLoading(false)
-    
-  }
-  }
+  const handleLogin = async () => {
+    console.log("ok");
 
-    const handleRegister=async()=>{
-    setLoading(true)
-    setError("")
-  try {
-    const res = await axios.post("http://localhost:5000/api/user/register",{email:form.email,password:form.password,name:form.name})
-
-    if(res.status===201){
-       setActiveTab("login")
-       alert("Login successful")
-       //go to home page
-       router.push("/")
-    }else{
-      setError(res.data)
-      alert("registration failed")//we will replace this with toastify
+    setLoading(true);
+    setError("");
+    try {
+      const res = await axios.post("http://localhost:5000/api/user/login", {
+        email: form.email,
+        password: form.password,
+      });
+      localStorage.setItem("token", res.data.token);
+      setUser(res.data.message.split(" ")[0]);
+      alert(`login successful for ${user}`);
+      console.log(res.data);
+      localStorage.removeItem("profilePic");
+      localStorage.setItem("profilePic", res.data.profilePic);
+      onClose();
+    } catch (err: unknown) {
+      setError(err.response.data + "");
+      setLoading(false);
     }
-   
-    onClose()
-  } catch (err:unknown) {
-    setError(err.response.data+'')
-  
-    
-  }
-    setLoading(false)
-  }
+  };
+
+  const handleRegister = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await axios.post("http://localhost:5000/api/user/register", {
+        email: form.email,
+        password: form.password,
+        name: form.name,
+      });
+
+      if (res.status === 201) {
+        setActiveTab("login");
+        alert("Login successful");
+        //go to home page
+        router.push("/");
+      } else {
+        setError(res.data);
+        alert("registration failed"); //we will replace this with toastify
+      }
+
+      onClose();
+    } catch (err: unknown) {
+      setError(err.response.data + "");
+    }
+    setLoading(false);
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md w-96 shadow-lg">
@@ -164,10 +225,10 @@ const LoginPopup = ({ onClose }: { onClose: () => void }) => {
               className="w-full border p-2 rounded mb-3"
             />
 
-            <button className="w-full bg-blue-600 text-white py-2 rounded mb-3"
-            onClick={handleLogin}
-                        disabled={loading}
-
+            <button
+              className="w-full bg-blue-600 text-white py-2 rounded mb-3"
+              onClick={handleLogin}
+              disabled={loading}
             >
               Login
             </button>
@@ -181,12 +242,13 @@ const LoginPopup = ({ onClose }: { onClose: () => void }) => {
                 Register
               </span>
             </p>
-<Link to="/resetpassword">
-            <p className="text-sm text-blue-600 text-center mt-2 cursor-pointer"
-            onClick={onClose}
-            >
-              FORGOT PASSWORD? CLICK HERE
-            </p>
+            <Link to="/resetpassword">
+              <p
+                className="text-sm text-blue-600 text-center mt-2 cursor-pointer"
+                onClick={onClose}
+              >
+                FORGOT PASSWORD? CLICK HERE
+              </p>
             </Link>
           </div>
         )}
@@ -223,8 +285,9 @@ const LoginPopup = ({ onClose }: { onClose: () => void }) => {
               onChange={handleChange}
             />
 
-            <button className="w-full bg-blue-600 text-white py-2 rounded mb-3"
-            onClick={handleRegister}
+            <button
+              className="w-full bg-blue-600 text-white py-2 rounded mb-3"
+              onClick={handleRegister}
             >
               Sign Up
             </button>

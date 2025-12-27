@@ -2,13 +2,12 @@ import React from "react";
 
 interface ProfileCardProps {
   name: string;
-  age: number;
   image: string;
   onAccept: () => void;
   onReject: () => void;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ name, age, image, onAccept, onReject }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ name,  image, onAccept, onReject }) => {
   return (
     <div className="max-w-sm mx-auto bg-white shadow-lg rounded-xl p-5 border">
       <div className="flex flex-col items-center">
@@ -19,7 +18,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, age, image, onAccept, o
         />
 
         <h2 className="text-xl font-bold mt-4">{name}</h2>
-        <p className="text-gray-600">{age} years old</p>
+        {/* <p className="text-gray-600">{age} years old</p> */}
         {/* Bio */}
         <p className="text-gray-600 text-center mt-2">
           Student | Developer | Passionate about Full Stack Development.

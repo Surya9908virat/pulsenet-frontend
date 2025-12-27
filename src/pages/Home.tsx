@@ -1,10 +1,28 @@
 import React, { useState } from "react";
 import PostCard from "../components/Post";
 import axios from "axios";
+import { baseUrl } from "../baseUrl";
+import { Link } from "react-router-dom";
+
+// {
+//     "friends": [
+//         {
+//             "_id": "691f315c3fc2a314dec44345",
+//             "email": "pk2@gmail.com"
+//         }
+//     ]
+// }
+interface Friend {
+  _id: string;
+  name: string;
+  email: string;
+  profilePic?: string;
+}
 
 const Home = () => {
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [friends,setFriends] = useState<Friend[]>([]);
 
   const [posts, setPosts] = useState([
     {
@@ -85,16 +103,37 @@ const Home = () => {
     }
   };
 
+  const fetchFriends = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(`${baseUrl}/friendrequest/getFriends`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFriends(res.data.friends);
+
+      console.log(res.data.friends);
+      
+    } catch (error) {
+      // Handle/log error if needed
+      console.error("Failed to fetch friends", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchFriends();
+  }, []);
+
   return (
     <div className="w-full h-screen bg-gray-300 flex">
       {/* LEFT PANEL */}
       <div className="w-1/5 bg-gray-100 border-2 p-4">
         <ul className="space-y-4 text-lg">
-          <li className="mb-2 p-2 bg-white rounded shadow">Home 🛖</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Profile 👤</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Notification 🔔</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Friends 👥</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Setting ⚙</li>
+          {/* <li className="mb-2 p-2 bg-white rounded shadow">Home 🛖</li> */}
+          <li className="mb-2 p-2 bg-white rounded shadow"><Link to="/profile"> Profile 👤</Link></li>
+          <li className="mb-2 p-2 bg-white rounded shadow"><Link to="/notification"> Notification 🔔</Link></li>
+          <li className="mb-2 p-2 bg-white rounded shadow"><Link to="/friends"> Friends 👥</Link></li>
+          <li className="mb-2 p-2 bg-white rounded shadow">  <Link to="/settings">Settings</Link>⚙</li>
         </ul>
       </div>
 
@@ -158,9 +197,32 @@ const Home = () => {
       <div className="w-1/5 bg-gray-100 border-2 p-4">
         <h2 className="text-xl font-bold mb-4">Friends</h2>
         <ul className="space-y-4">
-          <li className="mb-2 p-2 bg-white rounded shadow">Alice</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Bob</li>
-          <li className="mb-2 p-2 bg-white rounded shadow">Charlie</li>
+
+          {friends?  friends.length  > 0 ?
+          
+          <>{friends.map((friend) => (
+            <> 
+            <Link key={friend._id} to={`/friend/${friend._id}`}>
+            <div className="bg-white flex flex-col items-center p-2 rounded shadow">
+              
+            <img src={friend.profilePic||""} alt="" 
+            className="w-10 h-10 rounded-full mb-2"
+            />
+                    <li
+              key={friend._id}
+              className="mb-2 p-2  rounded shadow"
+            >
+              {friend.name}
+            </li>
+             </div>  
+             </Link>
+            </>
+
+          ))}</>:<>
+          
+          </>:<></>}
+          {/* <li className="mb-2 p-2 bg-white rounded shadow">Alice</li> */}
+       
         </ul>
       </div>
     </div>
