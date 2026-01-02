@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+import { getUnreadNotificationCount } from "../api/notificationApi";
 
 interface User {
   _id: string;
@@ -23,6 +24,7 @@ const Navbar: React.FC = () => {
   const [results, setResults] = useState<User[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [user, setUser] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   console.log(isLoginPage);
@@ -54,6 +56,20 @@ const Navbar: React.FC = () => {
     }, 400);
     return () => clearTimeout(timer);
   }, [searchText]);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!isLoginPage) {
+        try {
+          const res = await getUnreadNotificationCount();
+          setUnreadCount(res.data.unreadCount);
+        } catch (error) {
+          console.error("Error fetching unread count:", error);
+        }
+      }
+    };
+    fetchUnreadCount();
+  }, [isLoginPage, location.pathname]);
 
   const handleSelectUser = (userId: string) => {
     setShowDropdown(false);
@@ -160,9 +176,11 @@ const Navbar: React.FC = () => {
                       d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
                   </svg>
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-linear-to-br from-amber-400 to-yellow-600 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md">
-                    3
-                  </span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-linear-to-br from-amber-400 to-yellow-600 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Link>
 
                 {/* Profile Icon */}
