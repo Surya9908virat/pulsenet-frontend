@@ -23,50 +23,55 @@ const NotificationPage: React.FC = () => {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await getAllNotifications();
-        console.log("API RESPONSE =", response.data);
+  const fetchNotifications = async () => {
+    try {
+      const response = await getAllNotifications();
+      console.log("API RESPONSE =", response.data);
 
-        const notificationsWithChecked = (response.data.notifications || []).map((n: any) => ({
+      const notificationsWithChecked = (response.data.notifications || []).map((n: any) => ({
         ...n,
         checked: n.checked,
       }));
       setNotifications(notificationsWithChecked);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchNotifications();
   }, []);
 
   const handleMarkAsChecked = async (id: string) => {
     try {
-      await markAsChecked(id);
-
-      
+      // Optimistically update UI
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, checked: true } : n))
       );
+
+      await markAsChecked(id);
+      // Refetch to ensure sync with server
+      await fetchNotifications();
     } catch (error) {
       console.error("Error marking notification:", error);
     }
   };
 
   const handleMarkAllAsChecked = async () => {
-  try {
-    await markAllAsChecked();
-    setNotifications(prev => prev.map(n => ({ ...n, checked: true })));
-  } catch (error) {
-    console.error("Error marking all notifications:", error);
-  }
-};
+    try {
+      // Optimistically update UI
+      setNotifications((prev) => prev.map((n) => ({ ...n, checked: true })));
 
+      await markAllAsChecked();
+      // Refetch to ensure sync with server
+      await fetchNotifications();
+    } catch (error) {
+      console.error("Error marking all notifications:", error);
+    }
+  };
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
@@ -79,7 +84,6 @@ const NotificationPage: React.FC = () => {
           Mark All as Read
         </button>
       </div>
-
 
       {loading ? (
         <p>Loading...</p>

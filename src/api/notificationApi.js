@@ -11,6 +11,10 @@ export const getAllNotifications = async () => {
   return await API.get("/api/notification/getNotifications");
 };
 
+export const getUnreadNotificationCount = async () => {
+  return await API.get("/api/notification/unreadCount");
+};
+
 export const markAsChecked = async (id) => {
   return await API.put(`/api/notification/mark/${id}`, {});
 };
