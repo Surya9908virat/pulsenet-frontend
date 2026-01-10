@@ -91,9 +91,9 @@ setMessages((prev)=>[...prev,newMessage])
   };
 
   return (
-    <div className="w-[320px] h-[400px] bg-white rounded-lg shadow-2xl flex flex-col">
+    <div className="w-[360px] h-[460px] bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-800 text-white px-4 py-2 flex justify-between items-center">
+      <div className="bg-linear-to-r from-red-600 to-rose-500 text-white px-4 py-3 flex justify-between items-center">
         <span className="font-semibold">
           {selectedUser ? selectedUser.name : "Chats"}
         </span>
@@ -102,13 +102,17 @@ setMessages((prev)=>[...prev,newMessage])
 
       <div className="flex flex-1 overflow-hidden">
         {/* Friends */}
-        <div className="w-1/3 border-r text-sm overflow-y-auto">
+        <div className="w-1/3 border-r border-gray-200 text-sm overflow-y-auto bg-white">
           {friends.map((user) => (
             <div
               key={user._id}
               onClick={() => handleSelectUser(user)}
-              className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                selectedUser?._id === user._id ? "bg-gray-200 font-bold" : ""
+              className={`px-3 py-3 cursor-pointer transition-all
+              hover:bg-linear-to-r hover:from-red-50 hover:to-rose-50
+              ${
+              selectedUser?._id === user._id
+              ? "bg-linear-to-r from-red-50 to-rose-50 font-semibold text-red-600"
+              : "text-gray-700"
               }`}
             >
               {user.name}
@@ -129,10 +133,10 @@ setMessages((prev)=>[...prev,newMessage])
                     }`}
                   >
                     <div
-                      className={`px-3 py-2 rounded-lg max-w-[80%] ${
-                        msg.sender === "me"
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
+                      className={`px-3 py-2 rounded-xl max-w-[80%] shadow-sm ${
+                      msg.sender === "me"
+                    ? "bg-linear-to-r from-red-600 to-rose-500 text-white"
+                     : "bg-white border border-gray-200 text-gray-700"
                       }`}
                     >
                       {msg.content}
@@ -149,7 +153,7 @@ setMessages((prev)=>[...prev,newMessage])
 
           {/* Input */}
           {selectedUser && (
-            <div className="p-2 border-t flex items-center gap-1">
+            <div className="p-3 border-t border-gray-200 bg-white flex items-center gap-2">
               {/* <input type="file" /> */}
               <button className="p-2 text-gray-500">
                 {/* <ImageIcon size={18} /> */}
@@ -158,12 +162,12 @@ setMessages((prev)=>[...prev,newMessage])
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                className="flex-1 border rounded px-2 py-1 text-sm"
+                className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-200"
                 placeholder="Type a message"
               />
               <button
                 onClick={handleSend}
-                className="bg-blue-500 text-white px-3 rounded"
+                className="bg-linear-to-r from-red-600 to-rose-500 text-white px-4 py-2 rounded-full font-semibold shadow-md"
               >
                 Send
               </button>
