@@ -1,4 +1,4 @@
-import { baseUrl } from "../baseUrl";
+import { baseUrl } from "../baseUrl.ts";
 
 export const getDeletedPosts = async (page = 1, limit = 10) => {
   const token = localStorage.getItem("token");
@@ -19,7 +19,7 @@ export const getDeletedPosts = async (page = 1, limit = 10) => {
   return await response.json();
 };
 
-export const restorePost = async (postId) => {
+export const restorePost = async (postId:string) => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token found");
 
@@ -38,7 +38,7 @@ export const restorePost = async (postId) => {
   return await response.json();
 };
 
-export const deletePost = async (postId) => {
+export const deletePost = async (postId: string) => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token found");
 

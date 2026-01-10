@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { socket } from "../utils/socket";
+import { baseUrl } from "../baseUrl";
 
-const ChatWindow = ({ onClose }) => {
+interface ChatWindowProps {
+  onClose: () => void;
+}
+
+const ChatWindow = ({ onClose }: ChatWindowProps) => {
   interface Message {
     id: string;
     sender: string;
@@ -40,7 +45,7 @@ const ChatWindow = ({ onClose }) => {
   const getAllFriends = async () => {
     const token = localStorage.getItem("token");
     const res = await axios.get(
-      "http://localhost:5000/api/friendrequest/getAllFriends",
+      `${baseUrl}/api/friendrequest/getAllFriends`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setFriends(res.data.friends);
@@ -56,7 +61,7 @@ const ChatWindow = ({ onClose }) => {
 
     const token = localStorage.getItem("token");
     const res = await axios.get(
-      `http://localhost:5000/api/chat/conversations/${user._id}`,
+      `${baseUrl}/api/chat/conversations/${user._id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 

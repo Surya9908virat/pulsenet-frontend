@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProfileCard from "../components/ProfileCard";
 import { Users, Clock, UserX } from "lucide-react";
+import { baseUrl } from "../baseUrl"
 
 const Friends = () => {
   const [activeTab, setActiveTab] = useState<"friends" | "pending" | "rejected">(
@@ -18,7 +19,7 @@ const Friends = () => {
       if (!token) return;
 
       const res = await axios.get(
-        "http://localhost:5000/api/friendrequest/getfriendrequests",
+        `${baseUrl}/api/friendrequest/getfriendrequests`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -44,7 +45,7 @@ const Friends = () => {
       if (!token) return;
 
       const res = await axios.get(
-        "http://localhost:5000/api/friendrequest/getAllFriends",
+        `${baseUrl}/api/friendrequest/getAllFriends`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -62,7 +63,7 @@ const Friends = () => {
       if (!token) return;
 
       await axios.post(
-        "http://localhost:5000/api/friendrequest/stauschange",
+        `${baseUrl}/api/friendrequest/stauschange`,
         { requestId, status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

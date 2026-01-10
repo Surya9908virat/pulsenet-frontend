@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import PostCard from "../components/Post";
+import { baseUrl } from "../baseUrl";
 
 interface ProfileResponse {
   user: {
@@ -30,7 +31,7 @@ const Profile: React.FC = () => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No token");
 
-        const res = await axios.get("http://localhost:5000/api/user/me", {
+        const res = await axios.get(`${baseUrl}/user/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -52,7 +53,7 @@ const Profile: React.FC = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("http://localhost:5000/api/post/myposts", {
+        const res = await axios.get(`${baseUrl}/post/myposts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -75,7 +76,7 @@ const Profile: React.FC = () => {
       formData.append("profilePic", image);
 
       const res = await axios.post(
-        "http://localhost:5000/api/user/uploadProfilePic",
+        `${baseUrl}/user/uploadProfilePic`,
         formData,
         {
           headers: {
@@ -107,7 +108,7 @@ const Profile: React.FC = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      await axios.delete(`http://localhost:5000/api/post/delete/${postId}`, {
+      await axios.delete(`${baseUrl}/post/delete/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

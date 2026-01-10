@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
-import { getUnreadNotificationCount } from "../api/notificationApi";
+import { getUnreadNotificationCount } from "../api/notificationApi.js"
+import { baseUrl } from "../baseUrl";
 
 interface User {
   _id: string;
@@ -34,7 +35,7 @@ const Navbar: React.FC = () => {
   const searchUser = async (query: string) => {
     try {
       const res = await axios.get<{ users: User[] }>(
-        `http://localhost:5000/api/user/search/${query}`
+        `${baseUrl}/api/user/search/${query}`
       );
       if (res.data.users) {
         setResults(res.data.users);
@@ -248,7 +249,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose, setUser }) => {
         token: string;
         message: string;
         profilePic: string;
-      }>("http://localhost:5000/api/user/login", {
+      }>(`${baseUrl}/api/user/login`, {
         email: form.email,
         password: form.password,
       });
@@ -285,7 +286,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ onClose, setUser }) => {
 
     try {
       const res = await axios.post<{ message: string }>(
-        "http://localhost:5000/api/user/register",
+        `${baseUrl}/api/user/register`,
         {
           email: form.email,
           password: form.password,

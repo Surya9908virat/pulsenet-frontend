@@ -1,7 +1,8 @@
 import React from "react";
+import { baseUrl } from "../baseUrl";
 
-const sendOtpUrl = "http://localhost:5000/api/otp/otp";
-const changePasswordUrl = "http://localhost:5000/api/otp/verify-otp";
+const sendOtpUrl = `${baseUrl}/api/otp/otp`;
+const changePasswordUrl = `${baseUrl}/api/otp/verify-otp`;
 
 const ProfileCard: React.FC = () => {
   const [email, setEmail] = React.useState("");

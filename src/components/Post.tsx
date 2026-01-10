@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { baseUrl } from "../baseUrl";
 
 interface PostCardProps {
   id: string;
@@ -38,15 +39,7 @@ const PostCard: React.FC<PostCardProps> = ({
         alert("You are not logged in");
         return;
       }
-      const res = await axios.post(
-        `http://localhost:5000/api/post/comment/${id}`,
-        { text: comment },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    
     } catch (error) {
       console.error("Like failed", error);
     }
@@ -81,7 +74,7 @@ const PostCard: React.FC<PostCardProps> = ({
       }
 
       await axios.post(
-        `http://localhost:5000/api/post/like/${id}`,
+        `${baseUrl}/api/post/like/${id}`,
         {},
         {
           headers: {
@@ -181,11 +174,11 @@ const PostCard: React.FC<PostCardProps> = ({
     <div className="items-center">
       <h3 className="text-lg font-semibold mt-4">Comments</h3>
       <div className="mt-2 max-h-40 overflow-y-auto">
-        {comments?.length>0 && comments.map((comment: any) => (
+        {comments?.length? comments.length>0 && comments.map((comment: any) => (
           <div key={comment.id} className="border-b py-2">
             <p className="text-sm">{comment.text}</p>
           </div>
-      ))}
+      )): <p className="text-sm">No comments yet.</p>}
     </div>
     </div>
       {/* //add comments_count section here */}

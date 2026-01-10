@@ -20,7 +20,6 @@ const Settings: React.FC = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [myProfilePic] = useState(localStorage.getItem("profilePic") || "");
 
   // Form States
   const [confirmForUpdate, setConfirmForUpdate] = useState("");
