@@ -1,5 +1,5 @@
 import React from 'react';
-import Chatwindow from './Chatwindow';
+import Chatwindow from './Chatwindow'; // Ensure capitalization matches filename (Chatwindow vs ChatWindow)
 
 const Chatpopup: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -79,7 +79,12 @@ const Chatpopup: React.FC = () => {
 
               {/* CHAT CONTENT */}
               <div className="flex-1 overflow-hidden">
+<<<<<<< HEAD
                 <Chatwindow />
+=======
+                {/* FIX: Passed the onClose prop required by the interface */}
+                <Chatwindow onClose={() => setIsOpen(false)} />
+>>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
               </div>
             </div>
           )}
@@ -105,4 +110,8 @@ const Chatpopup: React.FC = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Chatpopup;
+=======
+export default Chatpopup;
+>>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
