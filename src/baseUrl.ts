@@ -1,1 +1,1 @@
-export const baseUrl = "hhttps://pulsenet-backend.onrender.com/api";
+export const baseUrl = "https://pulsenet-backend.onrender.com/api";
