@@ -79,12 +79,8 @@ const Chatpopup: React.FC = () => {
 
               {/* CHAT CONTENT */}
               <div className="flex-1 overflow-hidden">
-<<<<<<< HEAD
-                <Chatwindow />
-=======
                 {/* FIX: Passed the onClose prop required by the interface */}
                 <Chatwindow onClose={() => setIsOpen(false)} />
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
               </div>
             </div>
           )}
@@ -110,8 +106,4 @@ const Chatpopup: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Chatpopup;
-=======
-export default Chatpopup;
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6

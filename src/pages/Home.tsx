@@ -76,28 +76,11 @@ const Home: React.FC = () => {
         }
       } catch (err) {
         console.error("Sync failed", err);
-<<<<<<< HEAD
-        //send to login page
-        window.location.href = "/login";
-=======
         
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
       }
     };
     syncUser();
   }, []);
-<<<<<<< HEAD
-  useEffect(() => {
-        const loginTime = localStorage.getItem("loginTime");
-    if (loginTime === null) {
-       localStorage.clear();
-        window.location.href = '/login';
-        
-    }
-  },[]);
-=======
-
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
   // Global post update function
   // const handleUpdatePost = (updatedPostFromDB: Post) => {
   //   setPosts((prevPosts) =>

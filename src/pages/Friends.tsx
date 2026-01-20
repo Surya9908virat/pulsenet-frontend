@@ -19,11 +19,7 @@ const Friends = () => {
       if (!token) return;
 
       const res = await axios.get(
-<<<<<<< HEAD
-        `${baseUrl}/api/friendrequest/getfriendrequests`,
-=======
         `${baseUrl}/friendrequest/getfriendrequests`,
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -49,11 +45,7 @@ const Friends = () => {
       if (!token) return;
 
       const res = await axios.get(
-<<<<<<< HEAD
-        `${baseUrl}/api/friendrequest/getAllFriends`,
-=======
         `${baseUrl}/friendrequest/getAllFriends`,
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -71,11 +63,7 @@ const Friends = () => {
       if (!token) return;
 
       await axios.post(
-<<<<<<< HEAD
-        `${baseUrl}/api/friendrequest/stauschange`,
-=======
         `${baseUrl}/friendrequest/stauschange`,
->>>>>>> 0b919480b05c5b272f28997687059e2bf77909b6
         { requestId, status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
